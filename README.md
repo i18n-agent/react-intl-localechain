@@ -1,7 +1,7 @@
 # react-intl-locale-chain
 
 [![npm version](https://img.shields.io/npm/v/react-intl-locale-chain)](https://www.npmjs.com/package/react-intl-locale-chain)
-[![license](https://img.shields.io/npm/l/react-intl-locale-chain)](LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Smart locale fallback chains for react-intl — because pt-BR users deserve pt-PT, not English.
 
