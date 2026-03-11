@@ -28,7 +28,10 @@ export function LocaleChainProvider({
     return defaultFallbacks
   }, [fallbacksProp, overrides, mergeDefaultsProp])
 
-  const chain = effectiveFallbacks[locale] || []
+  const chain = useMemo(
+    () => effectiveFallbacks[locale] || [],
+    [effectiveFallbacks, locale]
+  )
 
   // Try sync initialization to avoid loading flash
   const [state, setState] = useState<{
@@ -52,13 +55,8 @@ export function LocaleChainProvider({
     return { messages: null, loading: true, resolvedLocale: null }
   })
 
-  // Async path: resolve when locale changes or sync init failed
+  // Async path: resolve when locale/chain changes or sync init failed
   useEffect(() => {
-    // Skip if sync init already resolved for current locale
-    if (!state.loading && state.resolvedLocale === locale) {
-      return
-    }
-
     // Try sync resolution first (avoids loading flash on locale change for sync loaders)
     try {
       const syncResult = resolveMessagesSync({
@@ -84,13 +82,18 @@ export function LocaleChainProvider({
         if (!cancelled) {
           setState({ messages: merged, loading: false, resolvedLocale: locale })
         }
+      },
+      () => {
+        if (!cancelled) {
+          setState({ messages: {}, loading: false, resolvedLocale: locale })
+        }
       }
     )
 
     return () => {
       cancelled = true
     }
-  }, [locale, defaultLocale, loadMessages, effectiveFallbacks])
+  }, [locale, defaultLocale, loadMessages, chain])
 
   if (state.loading || state.messages === null) {
     return <>{fallback}</>

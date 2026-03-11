@@ -25,6 +25,10 @@ Drop-in replacement for `IntlProvider`. Zero changes to your existing react-intl
 
 ```bash
 npm install react-intl-locale-chain
+# or
+pnpm add react-intl-locale-chain
+# or
+yarn add react-intl-locale-chain
 ```
 
 **Peer dependencies:** `react >= 16.8` and `react-intl >= 5.0.0`
@@ -248,6 +252,21 @@ Works with react-intl v5+ and v6+.
 
 **React 19 / Server Components?**
 `LocaleChainProvider` uses `useState` and `useEffect`, so it's a client component. For Server Component architectures, use `mergeMessagesFromChain()` in a Server Component and pass the result to vanilla `IntlProvider`.
+
+**Should `loadMessages` be a stable reference?**
+Yes. Like any function prop in React, define it outside the component or wrap in `useCallback` to avoid unnecessary re-resolution:
+
+```tsx
+// Good — stable reference
+const loadMessages = (locale: string) =>
+  import(`./messages/${locale}.json`).then(m => m.default);
+
+function App() {
+  return (
+    <LocaleChainProvider loadMessages={loadMessages} ... />
+  );
+}
+```
 
 **Should `fallbacks` and `overrides` props be stable references?**
 Yes, like any object prop in React. Define them outside the component or wrap in `useMemo` to avoid unnecessary re-resolution:
