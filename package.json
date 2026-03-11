@@ -1,6 +1,6 @@
 {
   "name": "react-intl-locale-chain",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Smart locale fallback chains for react-intl",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
