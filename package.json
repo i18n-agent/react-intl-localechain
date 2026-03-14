@@ -43,6 +43,7 @@
     "jsdom": "^24.0.0"
   },
   "keywords": [
+    "react",
     "react-intl",
     "formatjs",
     "i18n",

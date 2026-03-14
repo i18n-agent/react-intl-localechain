@@ -66,7 +66,7 @@ All default fallback chains are active. A `pt-BR` user will now see `pt-PT` tran
 />
 ```
 
-Uses all built-in fallback chains. Covers Portuguese, Spanish, French, German, Italian, Dutch, Norwegian, and Malay regional variants.
+Uses all built-in fallback chains. Covers Chinese, Portuguese, Spanish, French, German, Italian, Dutch, English, Arabic, Norwegian, and Malay regional variants.
 
 ### With overrides (merge with defaults)
 
@@ -121,7 +121,71 @@ const messages = await mergeMessagesFromChain({
 </IntlProvider>
 ```
 
+## API Reference
+
+### `LocaleChainProvider`
+
+A React component that wraps react-intl's `IntlProvider` and deep-merges messages from a configurable fallback chain.
+
+```tsx
+<LocaleChainProvider
+  locale="pt-BR"
+  defaultLocale="en"
+  loadMessages={(locale) => import(`./messages/${locale}.json`).then(m => m.default)}
+  fallback={<div>Loading...</div>}
+/>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `locale` | `string` | *required* | The active locale |
+| `defaultLocale` | `string` | *required* | Base locale loaded first (lowest priority) |
+| `loadMessages` | `(locale: string) => Messages \| Promise<Messages>` | *required* | Function to load messages for a locale |
+| `overrides` | `FallbackMap` | `undefined` | Custom fallback chains merged with defaults |
+| `fallbacks` | `FallbackMap` | `undefined` | Custom fallback chains (use with `mergeDefaults`) |
+| `mergeDefaults` | `boolean` | `true` | Whether to merge custom fallbacks with built-in defaults |
+| `fallback` | `React.ReactNode` | `null` | Content shown while async messages are loading |
+| `children` | `React.ReactNode` | *required* | Your app content |
+
+All other props are passed through to react-intl's `IntlProvider`.
+
+### `mergeMessagesFromChain(config)`
+
+Pure async utility for resolving and merging messages outside of React (e.g., in Server Components or setup code).
+
+```ts
+const messages = await mergeMessagesFromChain({
+  locale: 'pt-BR',
+  defaultLocale: 'en',
+  loadMessages: (locale) => fetch(`/api/messages/${locale}`).then(r => r.json()),
+})
+```
+
+### `deepMerge(target, source)`
+
+Recursively deep-merges two message objects. Source values override target values.
+
+### `defaultFallbacks`
+
+The built-in `FallbackMap` constant containing all default locale chains.
+
+### `mergeFallbacks(defaults, overrides)`
+
+Utility function that merges two `FallbackMap` objects. Overrides replace matching keys from defaults.
+
 ## Default Fallback Map
+
+### Chinese
+
+| Locale | Fallback Chain |
+|--------|---------------|
+| zh-Hant-HK | zh-Hant-TW -> zh-Hant -> (default locale) |
+| zh-Hant-MO | zh-Hant-HK -> zh-Hant-TW -> zh-Hant -> (default locale) |
+| zh-Hant-TW | zh-Hant -> (default locale) |
+| zh-Hans-SG | zh-Hans -> (default locale) |
+| zh-Hans-MY | zh-Hans -> (default locale) |
 
 ### Portuguese
 
@@ -129,6 +193,8 @@ const messages = await mergeMessagesFromChain({
 |--------|---------------|
 | pt-BR | pt-PT -> pt -> (default locale) |
 | pt-PT | pt -> (default locale) |
+| pt-AO | pt-PT -> pt -> (default locale) |
+| pt-MZ | pt-PT -> pt -> (default locale) |
 
 ### Spanish
 
@@ -191,6 +257,40 @@ const messages = await mergeMessagesFromChain({
 | Locale | Fallback Chain |
 |--------|---------------|
 | nl-BE | nl -> (default locale) |
+
+### English
+
+| Locale | Fallback Chain |
+|--------|---------------|
+| en-GB | en -> (default locale) |
+| en-AU | en-GB -> en -> (default locale) |
+| en-NZ | en-AU -> en-GB -> en -> (default locale) |
+| en-IN | en-GB -> en -> (default locale) |
+| en-CA | en -> (default locale) |
+| en-ZA | en-GB -> en -> (default locale) |
+| en-IE | en-GB -> en -> (default locale) |
+| en-SG | en-GB -> en -> (default locale) |
+
+### Arabic
+
+| Locale | Fallback Chain |
+|--------|---------------|
+| ar-SA | ar -> (default locale) |
+| ar-EG | ar -> (default locale) |
+| ar-AE | ar -> (default locale) |
+| ar-MA | ar -> (default locale) |
+| ar-DZ | ar -> (default locale) |
+| ar-IQ | ar -> (default locale) |
+| ar-KW | ar -> (default locale) |
+| ar-QA | ar -> (default locale) |
+| ar-BH | ar -> (default locale) |
+| ar-OM | ar -> (default locale) |
+| ar-JO | ar -> (default locale) |
+| ar-LB | ar -> (default locale) |
+| ar-TN | ar -> (default locale) |
+| ar-LY | ar -> (default locale) |
+| ar-SD | ar -> (default locale) |
+| ar-YE | ar -> (default locale) |
 
 ### Norwegian
 
