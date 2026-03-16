@@ -382,6 +382,16 @@ function App() {
 }
 ```
 
+## Example
+
+A minimal example app is included in the [`example/`](./example/) directory. It demonstrates the locale chain resolving three keys for `pt-BR`, showing fallback from `pt-BR -> pt -> en`.
+
+```bash
+cd example && pnpm install && pnpm dev
+```
+
+See [`example/README.md`](./example/README.md) for full setup instructions.
+
 ## Contributing
 
 - Open issues for bugs or feature requests.
